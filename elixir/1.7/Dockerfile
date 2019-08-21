@@ -3,7 +3,6 @@ FROM alpine:3.9
 
 ENV REFRESHED_AT=2019-04-05 \
     LANG=en_US.UTF-8 \
-    HOME=/opt/app/ \
     # Set this so that CTRL+G works properly
     TERM=xterm \
     ERLANG_VERSION=21.3.3 \
@@ -13,7 +12,7 @@ WORKDIR /tmp/erlang-build
 
 # Install Erlang
 RUN \
-    mkdir -p "${HOME}" && \
+    mkdir -p /opt/app/ && \
     echo "@main http://dl-cdn.alpinelinux.org/alpine/v3.9/main" >> /etc/apk/repositories && \
     echo "@community http://dl-cdn.alpinelinux.org/alpine/v3.9/community" >> /etc/apk/repositories && \
     echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
@@ -71,7 +70,7 @@ RUN \
       # Build
       make -j4 && make install && \
       # Cleanup
-      cd $HOME && \
+      cd /opt/app/ && \
       rm -rf /tmp/erlang-build && \
       # Update ca certificates
       update-ca-certificates --fresh && \
@@ -110,3 +109,4 @@ RUN \
     rm -rf /tmp/elixir-build && \
     apk del --force .elixir-build
 
+WORKDIR /
